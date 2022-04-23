@@ -21,6 +21,11 @@ router.post("/translate", async (ctx) => {
   context = await translate("https://translate.google.cn/?sl=fr&tl=ru");
   context = await translate("https://translate.google.cn/?sl=ru&tl=zh-CN");
 
+  ctx.header = {
+    "Content-Type": "application/json",
+    "access-control-allow-origin": "https://bunga.vercel.app",
+    "access-control-allow-methods": "POST",
+  }
   ctx.body = JSON.stringify(context, null, 2);
 
   async function translate(url: string) {
