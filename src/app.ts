@@ -2,7 +2,7 @@ import express from 'express';
 import puppeteer from "puppeteer";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   res.send("hello")
@@ -41,5 +41,5 @@ app.post("/translate", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log('listening on http://localhost:3000')
+  console.log(`listening on http://localhost:${port}`)
 })
