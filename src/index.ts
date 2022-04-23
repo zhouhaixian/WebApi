@@ -1,6 +1,6 @@
 import Koa from "koa";
 import Router from "koa-router";
-import bodyParser from "koa-bodyParser";
+import bodyParser from "koa-bodyparser";
 import puppeteer from "puppeteer";
 
 const app = new Koa();
