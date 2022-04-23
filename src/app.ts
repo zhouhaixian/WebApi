@@ -7,6 +7,13 @@ const port = process.env.PORT || 3001;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.all("*", (_, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://bunga.vercel.app")
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST")
+  res.setHeader("Content-Type", "application/json;charset=utf-8")
+  next()
+})
+
 app.get('/', (req, res) => {
   res.send("hello")
 })
@@ -26,8 +33,6 @@ app.post("/translate", async (req, res) => {
   context = await translate("https://translate.google.cn/?sl=fr&tl=ru");
   context = await translate("https://translate.google.cn/?sl=ru&tl=zh-CN");
 
-  res.setHeader("Access-Control-Allow-Origin", "https://bunga.vercel.app")
-  res.setHeader("Content-Type", "application/json")
   res.send(JSON.stringify(context, null, 2))
 
   async function translate(url: string) {
