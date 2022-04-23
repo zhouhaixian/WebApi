@@ -23,13 +23,8 @@ app.post("/translate", async (req, res) => {
   context = await translate("https://translate.google.cn/?sl=fr&tl=ru");
   context = await translate("https://translate.google.cn/?sl=ru&tl=zh-CN");
 
-  const header = {
-    "Content-Type": "application/json",
-    "access-control-allow-origin": "https://bunga.vercel.app",
-    "access-control-allow-methods": "POST",
-  }
-
-  res.header(header).send(JSON.stringify(context, null, 2))
+  res.setHeader("Access-Control-Allow-Origin", "https://bunga.vercel.app")
+  res.send(JSON.stringify(context, null, 2))
 
   async function translate(url: string) {
     await page.goto(url);
