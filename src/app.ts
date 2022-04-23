@@ -2,7 +2,7 @@ import express from 'express';
 import puppeteer from "puppeteer";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 app.get('/', (req, res) => {
   res.send("hello")
@@ -24,6 +24,7 @@ app.post("/translate", async (req, res) => {
   context = await translate("https://translate.google.cn/?sl=ru&tl=zh-CN");
 
   res.setHeader("Access-Control-Allow-Origin", "https://bunga.vercel.app")
+  res.setHeader("Content-Type", "application/json")
   res.send(JSON.stringify(context, null, 2))
 
   async function translate(url: string) {
