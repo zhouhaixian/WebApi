@@ -1,8 +1,11 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import puppeteer from "puppeteer";
 
 const app = express();
 const port = process.env.PORT || 3001;
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   res.send("hello")
