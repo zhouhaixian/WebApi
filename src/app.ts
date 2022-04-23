@@ -1,15 +1,17 @@
-import Koa from "koa";
-import Router from "koa-router";
-import bodyParser from "koa-bodyparser";
+import express from 'express';
 import puppeteer from "puppeteer";
 
-const app = new Koa();
-const router = new Router();
+const app = express();
+const port = 3000;
 
-router.post("/translate", async (ctx) => {
+app.get('/', (req, res) => {
+  res.send("hello")
+})
+
+app.post("/translate", async (req, res) => {
   let {
     body: { context },
-  } = ctx.request.body;
+  } = req;
 
   const browser = await puppeteer.launch({
     ignoreDefaultArgs: ["--enable-automation"],
@@ -21,12 +23,13 @@ router.post("/translate", async (ctx) => {
   context = await translate("https://translate.google.cn/?sl=fr&tl=ru");
   context = await translate("https://translate.google.cn/?sl=ru&tl=zh-CN");
 
-  ctx.header = {
+  const header = {
     "Content-Type": "application/json",
     "access-control-allow-origin": "https://bunga.vercel.app",
     "access-control-allow-methods": "POST",
   }
-  ctx.body = JSON.stringify(context, null, 2);
+
+  res.header(header).send(JSON.stringify(context, null, 2))
 
   async function translate(url: string) {
     await page.goto(url);
@@ -37,10 +40,6 @@ router.post("/translate", async (ctx) => {
   }
 });
 
-app.use(bodyParser())
-app.use(router.routes())
-app.use(router.allowedMethods())
-
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log('listening on http://localhost:3000')
 })
