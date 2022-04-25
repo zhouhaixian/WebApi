@@ -1,49 +1,29 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import puppeteer from "puppeteer";
+import express from "express";
+import bodyParser from "body-parser";
+
+import index from "./index";
+import translate from "./translate";
 
 const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.all("*", (_, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://bunga.vercel.app")
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST")
-  res.setHeader("Content-Type", "application/json;charset=utf-8")
-  next()
-})
-
-app.get('/', (req, res) => {
-  res.send("hello")
-})
-
-app.post("/translate", async (req, res) => {
-  let {
-    body: { context },
-  } = req;
-
-  const browser = await puppeteer.launch({
-    ignoreDefaultArgs: ["--enable-automation"],
-  });
-  const page = await browser.newPage();
-
-  context = await translate("https://translate.google.cn/?sl=zh-CN&tl=en");
-  context = await translate("https://translate.google.cn/?sl=en&tl=fr");
-  context = await translate("https://translate.google.cn/?sl=fr&tl=ru");
-  context = await translate("https://translate.google.cn/?sl=ru&tl=zh-CN");
-
-  res.send(JSON.stringify(context, null, 2))
-
-  async function translate(url: string) {
-    await page.goto(url);
-    await page.click(`textarea[aria-label="原文"]`, { clickCount: 3 });
-    await page.type(`textarea[aria-label="原文"]`, context);
-    await page.waitForSelector(`[jsname="W297wb"`, { timeout: 5000 });
-    return await page.$eval(`[jsname="W297wb"`, (el) => el.innerHTML);
-  }
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    process.env.NODE_ENV === "dev" ? "*" : "https://bunga.vercel.app"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
 });
 
+app.get("/", index);
+
+app.post("/translate", translate);
+
 app.listen(port, () => {
-  console.log(`listening on http://localhost:${port}`)
-})
+  console.log(`listening on http://localhost:${port}`);
+});
