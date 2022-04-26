@@ -5,6 +5,7 @@ import axios from "axios";
 export default async function (req: Request, res: Response) {
   dotenv.config();
   const key = process.env.TRANSLATOR_KEY!;
+  const region = process.env.TRANSLATOR_REGION!;
 
   let {
     body: { context },
@@ -28,7 +29,7 @@ export default async function (req: Request, res: Response) {
       method: "POST",
       headers: {
         "Ocp-Apim-Subscription-Key": key,
-        "Ocp-Apim-Subscription-Region": "southeastasia",
+        "Ocp-Apim-Subscription-Region": region,
         "Context-Type": "application/json; charset=UTF-8",
       },
       params: {
